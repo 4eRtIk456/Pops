@@ -43,7 +43,7 @@ def draw_menu():
     pygame.draw.line(screen, BLACK, (260, 20), (290, 20), 3)  # Pencil
     pygame.draw.rect(screen, BLACK, (320, 15, 30, 20), 2)  # Rectangle
     pygame.draw.circle(screen, BLACK, (400, 25), 10, 2)  # Circle
-    pygame.draw.line(screen, BLACK, (460, 15), (490, 35), 3)  # Eraser (diagonal line)
+    screen.blit(font.render("Eraser", True, BLACK), (440, 20))  # Eraser (diagonal line)
     pygame.draw.rect(screen, BLACK, (520, 15, 20, 20), 2)  # Square
     pygame.draw.polygon(screen, BLACK, [(580, 35), (615, 35), (615, 15)], 2)  # Right Triangle
     pygame.draw.polygon(screen, BLACK, [(680, 35), (700, 35), (690, 15)], 2)  # Equilateral Triangle
@@ -114,7 +114,9 @@ while running:
                     pygame.draw.rect(canvas, color, pygame.Rect(min(x1, x2), min(y1, y2), abs(x2 - x1), abs(y2 - y1)), 2)
                 elif mode == "square":
                     side = min(abs(x2 - x1), abs(y2 - y1))
-                    pygame.draw.rect(canvas, color, pygame.Rect(x1, y1, side, side), 2)
+                    top_left_x = x1 if x2 >= x1 else x1 - side
+                    top_left_y = y1 if y2 >= y1 else y1 - side
+                    pygame.draw.rect(canvas, color, pygame.Rect(top_left_x, top_left_y, side, side), 2)
                 elif mode == "right_triangle":
                     points = [(x1, y1), (x1, y2), (x2, y2)]
                     pygame.draw.polygon(canvas, color, points, 2)
@@ -147,7 +149,14 @@ while running:
                 x2, y2 = event.pos
                 if mode == "square":
                     side = min(abs(x2 - x1), abs(y2 - y1))
-                    preview_shape = [(x1, y1), (x1 + side, y1), (x1 + side, y1 + side), (x1, y1 + side)]
+                    top_left_x = x1 if x2 >= x1 else x1 - side
+                    top_left_y = y1 if y2 >= y1 else y1 - side
+                    preview_shape = [
+                        (top_left_x, top_left_y),
+                        (top_left_x + side, top_left_y),
+                        (top_left_x + side, top_left_y + side),
+                        (top_left_x, top_left_y + side)
+                    ]
                 elif mode == "rect":
                     preview_rect = pygame.Rect(min(x1, x2), min(y1, y2), abs(x2 - x1), abs(y2 - y1))
                 elif mode == "circle":
